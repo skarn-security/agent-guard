@@ -1,0 +1,10 @@
+{
+  "name": "skarn-guard-codex",
+  "version": "0.17.0",
+  "description": "Real-time pre-execution guard: blocks AI tool calls that leak a secret, run a malicious package install, or exfiltrate data. Backed by the Skarn detection engine. Audit mode reports only.",
+  "author": {
+    "name": "Skarn",
+    "url": "https://getskarn.com"
+  },
+  "homepage": "https://getskarn.com"
+}

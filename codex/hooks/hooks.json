@@ -1,0 +1,45 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "skarn guard --agent codex --guard-mode audit",
+            "commandWindows": "skarn.exe guard --agent codex --guard-mode audit",
+            "timeout": 5,
+            "statusMessage": "skarn: scanning prompt"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch|spawn_agent|mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "skarn guard --agent codex --guard-mode audit",
+            "commandWindows": "skarn.exe guard --agent codex --guard-mode audit",
+            "timeout": 5,
+            "statusMessage": "skarn: scanning tool call"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "Bash|apply_patch|spawn_agent|mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "skarn guard --agent codex --guard-mode audit",
+            "commandWindows": "skarn.exe guard --agent codex --guard-mode audit",
+            "timeout": 5,
+            "statusMessage": "skarn: checking permission"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "skarn",
+  "description": "Skarn security guard for AI coding assistants",
+  "owner": {
+    "name": "Skarn",
+    "url": "https://getskarn.com"
+  },
+  "plugins": [
+    {
+      "name": "skarn-guard",
+      "description": "Real-time pre-execution secret and exfiltration guard for Claude Code (audit mode).",
+      "author": {
+        "name": "Skarn",
+        "url": "https://getskarn.com"
+      },
+      "category": "security",
+      "source": "./claude",
+      "homepage": "https://getskarn.com"
+    },
+    {
+      "name": "skarn-guard-codex",
+      "description": "Real-time pre-execution secret and exfiltration guard for Codex CLI (audit mode).",
+      "author": {
+        "name": "Skarn",
+        "url": "https://getskarn.com"
+      },
+      "category": "security",
+      "source": "./codex",
+      "homepage": "https://getskarn.com"
+    }
+  ]
+}
