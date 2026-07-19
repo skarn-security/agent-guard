@@ -1,6 +1,6 @@
 {
   "name": "skarn-guard",
-  "version": "0.17.0",
+  "version": "0.18.1",
   "description": "Real-time PreToolUse guard: blocks AI tool calls that leak a secret, run a malicious package install, or exfiltrate data. Backed by the Skarn detection engine.",
   "author": {
     "name": "Skarn",
