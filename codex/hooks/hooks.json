@@ -40,6 +40,19 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "skarn guard --agent codex --guard-mode audit",
+            "commandWindows": "skarn.exe guard --agent codex --guard-mode audit",
+            "timeout": 10,
+            "statusMessage": "skarn: reviewing recent sessions"
+          }
+        ]
+      }
     ]
   }
 }

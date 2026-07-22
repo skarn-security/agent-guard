@@ -1,6 +1,6 @@
 # Skarn guard: agent plugins
 
-Hook configuration for [Skarn](https://getskarn.com)'s real-time guard, packaged as a native marketplace for Claude Code and Codex CLI. This repository is generated at every Skarn release and holds configuration only: two plugin manifests, two hook files, and this page. It contains no binary, no detection rules, and no engine code.
+Hook configuration for [Skarn](https://getskarn.com/?utm_source=agent-guard-readme&utm_medium=referral&utm_campaign=home&utm_content=intro)'s real-time guard, packaged as a native marketplace for Claude Code and Codex CLI. This repository is generated at every Skarn release and holds configuration only: two plugin manifests, two hook files, and this page. It contains no binary, no detection rules, and no engine code.
 
 The guard is a pre-execution hook. Before your agent runs a shell command, applies a patch, writes a file, fetches a URL, calls an MCP tool, or sends a prompt to the model provider, the pending action is scanned by the Skarn detection engine on your machine and gets a verdict: deny (block), ask (escalate to you), or allow (silent). It scans locally, makes no network call, and never prints a raw secret - a verdict names the rule and a redacted preview.
 
@@ -58,4 +58,4 @@ Plugin updates and binary updates are independent: the hook commands invoke `ska
 
 ## Safety
 
-A malformed event, an out-of-scope tool, or any guard error yields allow: the guard never bricks your agent. It only ever tightens a decision, never loosens one. Documentation: https://getskarn.com
+A malformed event, an out-of-scope tool, or any guard error yields allow: the guard never bricks your agent. It only ever tightens a decision, never loosens one. Documentation: https://getskarn.com/?utm_source=agent-guard-readme&utm_medium=referral&utm_campaign=home&utm_content=documentation
