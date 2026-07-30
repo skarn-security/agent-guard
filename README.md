@@ -38,6 +38,8 @@ Both plugins ship in **audit** mode: the guard reports the verdict it would have
 
 When the log looks clean, flip the `--guard-mode audit` in the hook command to `--guard-mode enforce`, or run `skarn setup --update --mode enforce`. Enforcement requires a Skarn license; without one the guard stays in audit and reports rather than blocks, so a lapsed license never breaks your editor.
 
+Keeping a hook current as Skarn releases widen a host's event set is the plugin update below, not a Skarn command: these plugins carry their own hook files, and `skarn setup --update` refreshes only the Skarn-owned entries that `skarn setup` itself wrote, at whichever scope it wrote them (per-user by default, or the repo config under `--scope project`). For a config wired that other way, `--update` rewrites those entries to whatever the installed binary writes, replacing each one whole except for a hook-call timeout you tuned yourself (`timeout`, or `timeoutSec` on Copilot), which is carried across when it pairs unambiguously with its replacement and the value is sane, so a per-machine budget survives the refresh; any other field you added to such an entry is dropped. Run at a terminal, `skarn guard report` and `skarn assess` name a setup-wired per-user hook that has fallen behind, once per release, with the exact update command for that host.
+
 ## Updating
 
 Claude Code:
