@@ -1,6 +1,8 @@
 # Skarn guard: agent plugins
 
-Hook configuration for [Skarn](https://getskarn.com/?utm_source=agent-guard-readme&utm_medium=referral&utm_campaign=home&utm_content=intro)'s real-time guard, packaged as a native marketplace for Claude Code and Codex CLI. This repository is generated at every Skarn release and holds configuration only: two plugin manifests, two hook files, and this page. It contains no binary, no detection rules, and no engine code.
+Hook configuration, agent skills, and a local MCP server declaration for [Skarn](https://getskarn.com/?utm_source=agent-guard-readme&utm_medium=referral&utm_campaign=home&utm_content=intro), packaged for four hosts, with a fifth host served from its own repository. This repository is generated at every Skarn release. It contains no binary, no detection rules, and no engine code.
+
+Five units live here, four of them guard units. `claude/` and `codex/` are plugins in the marketplace this repository's root manifest serves, for Claude Code and Codex CLI. `antigravity/` is a plugin directory for the Antigravity CLI (`agy`). The repository root is itself a Gemini CLI extension, because Google's installer and gallery crawler read the manifest from the root. A file at the root is either a repository-level file (this README, LICENSE, SECURITY.md, the marketplace manifest) or a Gemini file (`gemini-extension.json`, `GEMINI.md`, `hooks/`, `skills/`); every other host gets a subdirectory. The fifth unit, `recall/`, is a skill-only plugin in the same marketplace: one skill, no hooks, no MCP server. The Cursor unit is not in this repository at all; it lives at https://github.com/skarn-security/cursor-plugin.
 
 The guard is a pre-execution hook. Before your agent runs a shell command, applies a patch, writes a file, fetches a URL, calls an MCP tool, or sends a prompt to the model provider, the pending action is scanned by the Skarn detection engine on your machine and gets a verdict: deny (block), ask (escalate to you), or allow (silent). It scans locally, makes no network call, and never prints a raw secret - a verdict names the rule and a redacted preview.
 
@@ -26,15 +28,84 @@ codex plugin marketplace add skarn-security/agent-guard
 codex plugin add skarn-guard-codex@skarn
 ```
 
-The two plugins carry different names because one marketplace cannot hold two plugins under the same name, and each ships its host's hook shape (event names, tool matchers, and the `--agent` the guard routes on). Install the one for the host you are wiring.
+The two guard plugins carry different names because one marketplace cannot hold two plugins under the same name, and each ships its host's hook shape (event names, tool matchers, and the `--agent` the guard routes on). Install the one for the host you are wiring. Both carry the `skarn-audit` skill, which runs `skarn assess` and `skarn vet` over this machine and reports redacted findings. Redaction masks the credential values Skarn detects; the surrounding transcript context in a finding is still session-derived, so the skill treats a whole result as session data rather than as safe text.
 
 Codex asks you to trust the hooks the first time you start it after installing: choose "Trust all and continue" at the "Hooks need review" prompt. Until you do, the hooks do not run and the guard is not protecting you. Trust is a content hash per hook, so any later change to a hook (a version bump, or the audit-to-enforce flip) asks again. Claude Code needs no trust step; the hooks are live in your next session.
 
-`skarn setup` is the alternative install path: it merges the same hooks into each host's native config without the plugin system, and covers Cursor as well.
+`skarn-recall` is a third plugin in the same marketplace, and the marketplace add above already reaches it. It carries one skill, no hooks, and nothing host-specific, so the same plugin serves both hosts:
+
+```sh
+claude plugin install skarn-recall@skarn
+```
+
+```sh
+codex plugin add skarn-recall@skarn
+```
+
+That skill reconstructs what you worked on from your session transcripts, which is why it ships apart from the guard rather than inside it. Transcript content it reads leaves your machine for the model provider serving the agent; redaction masks the credentials Skarn detects, not everything you would call sensitive. Install it when you want that, and scope what it reads by project and by time window.
+
+Gemini CLI installs this repository as an extension, which carries the same guard hooks in audit mode, the `skarn-audit` skill, a `GEMINI.md` context file, and the MCP server below:
+
+```sh
+gemini extensions install https://github.com/skarn-security/agent-guard
+gemini extensions list
+gemini extensions uninstall skarn
+```
+
+Install asks for consent, because the extension declares both hooks and an MCP server, and it asks you to trust the folder. Answer both.
+
+Antigravity CLI installs the `antigravity/` directory of a clone:
+
+```sh
+git clone https://github.com/skarn-security/agent-guard
+agy plugin install agent-guard/antigravity
+agy plugin list
+agy plugin uninstall skarn-guard
+```
+
+`agy plugin list` reports the plugin with its hook, skill, and MCP server counts. Copying `antigravity/` to `~/.gemini/config/plugins/skarn-guard/` by hand does the same thing.
+
+Cursor has its own repository, https://github.com/skarn-security/cursor-plugin, generated by the same release. Cursor's marketplace and its review are per repository, which is why that unit does not live here.
+
+`skarn setup` is the alternative install path for Claude Code, Codex CLI, Cursor, Copilot CLI, Gemini CLI and Grok Build: it merges the same hooks into each of those hosts' native config without the plugin system. It does not know the Antigravity CLI, so that host installs the plugin directory above or merges its hook file by hand.
+
+## Local MCP server
+
+Each of the four guard units (`claude/`, `codex/`, `antigravity/`, and the Gemini extension at the root) declares the same stdio MCP server, which the host starts by running `skarn mcp` from your PATH:
+
+```json
+{
+  "mcpServers": {
+    "skarn": {
+      "command": "skarn",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+It runs on your machine, makes no network call, and exposes four read-only tools: `scan_sessions` (findings from past sessions, every previewed value redacted), `vet_configs` (a masked report on your assistant configuration surface), `list_sessions` and `session_stats` (metadata and aggregates, never message content). There is no write tool and no tool that returns message content.
+
+If you would rather not install the binary yourself, a version-pinned npx form works:
+
+```json
+{
+  "mcpServers": {
+    "skarn": {
+      "command": "npx",
+      "args": ["-y", "@skarn-security/skarn@0.25.0", "mcp"]
+    }
+  }
+}
+```
+
+npx downloads the package the first time the server starts and caches it afterward, so the first start is slower and needs network access. Pin the version. The unpinned form resolves to whatever the registry serves at start time, and `skarn vet` reports it as `vet-mcp-unpinned`. Do not use it.
+
+Each host reports a missing binary its own way. `claude mcp list` says `Failed to connect` with `Executable not found in $PATH: "skarn"`. `gemini mcp list` shows the `skarn` server as `Disconnected`. `codex mcp list` runs no health check, so the row stays listed and enabled and the server fails when a session starts it. Cursor shows the plugin's row as `Error - Show Output`, and the output panel ends with `spawn skarn ENOENT`. In every case, run `skarn --version` in a terminal: `command not found` means the binary is not installed or is not on the PATH that host inherits, which is the usual answer for an application launched from a desktop rather than a shell.
 
 ## Audit first, then enforce
 
-Both plugins ship in **audit** mode: the guard reports the verdict it would have returned and never changes what your agent does. Run it that way first and measure your real would-block rate. Set `SKARN_GUARD_LOG=<path>` in the environment your agent inherits and the guard appends one redacted JSONL record per flagged call (`ts`, `verdict`, `tool`, `rule`, `severity`, redacted reason, `session`, `cwd`, `latency_ms`); clean calls are not logged.
+Both guard plugins ship in **audit** mode (`skarn-recall` has no hooks, so it has no mode): the guard reports the verdict it would have returned and never changes what your agent does. Run it that way first and measure your real would-block rate. Set `SKARN_GUARD_LOG=<path>` in the environment your agent inherits and the guard appends one redacted JSONL record per flagged call (`ts`, `verdict`, `tool`, `rule`, `severity`, redacted reason, `session`, `cwd`, `latency_ms`); clean calls are not logged.
 
 When the log looks clean, flip the `--guard-mode audit` in the hook command to `--guard-mode enforce`, or run `skarn setup --update --mode enforce`. Enforcement requires a Skarn license; without one the guard stays in audit and reports rather than blocks, so a lapsed license never breaks your editor.
 
@@ -56,8 +127,12 @@ codex plugin marketplace upgrade
 codex plugin add skarn-guard-codex@skarn
 ```
 
-Plugin updates and binary updates are independent: the hook commands invoke `skarn guard` on PATH, so `brew upgrade skarn` alone gives you the newer detection engine. A plugin update only matters when the hook shape changes (a new event, a new flag, a new matcher).
+Plugin updates and binary updates are independent: the hook commands invoke `skarn guard` on PATH, so `brew upgrade skarn` alone gives you the newer detection engine. A plugin update matters when anything the plugin itself carries changes: the hook shape (a new event, a new flag, a new matcher), a skill's text, or the manifest metadata.
 
 ## Safety
 
-A malformed event, an out-of-scope tool, or any guard error yields allow: the guard never bricks your agent. It only ever tightens a decision, never loosens one. Documentation: https://getskarn.com/?utm_source=agent-guard-readme&utm_medium=referral&utm_campaign=home&utm_content=documentation
+The guard only ever tightens a decision, never loosens one. What happens when the guard itself fails depends on the host, because each host decides what a hook crash, timeout, or malformed output means.
+
+Claude Code, Codex CLI, and Gemini CLI fail open: a malformed event, an out-of-scope tool, or any guard error yields allow, and the guard never bricks your agent. The only fail-closed path on those hosts is `--strict` with a licensed enforce, which each host README documents.
+
+The Antigravity CLI fails closed on every hook outcome except an explicit allow: a crash, a timeout, invalid JSON, and an empty `{}` all block the matched call, in audit mode as well as enforce, and a wired hook with no `skarn` binary on PATH blocks every matched call. The guard answers every event it receives with an explicit decision, and the shipped matcher names only the tools it scopes so that a step outside the matcher can never be blocked by a guard failure. Install skarn before wiring that hook, and remove the entry before uninstalling skarn. Documentation: https://getskarn.com/?utm_source=agent-guard-readme&utm_medium=referral&utm_campaign=home&utm_content=documentation

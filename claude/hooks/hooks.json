@@ -2,7 +2,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash|WebFetch|Write|Edit|NotebookEdit|mcp__.*",
+        "matcher": "Bash|WebFetch|WebSearch|Write|Edit|MultiEdit|NotebookEdit|mcp__.*",
         "hooks": [
           {
             "type": "command",
@@ -14,7 +14,7 @@
     ],
     "PermissionRequest": [
       {
-        "matcher": "Bash|WebFetch|Write|Edit|NotebookEdit|mcp__.*",
+        "matcher": "Bash|WebFetch|WebSearch|Write|Edit|MultiEdit|NotebookEdit|mcp__.*",
         "hooks": [
           {
             "type": "command",

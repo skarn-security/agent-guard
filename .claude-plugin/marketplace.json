@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "skarn-guard",
-      "description": "Real-time pre-execution secret and exfiltration guard for Claude Code (audit mode).",
+      "description": "Real-time pre-execution secret and exfiltration guard for Claude Code (audit mode), with the skarn-audit skill.",
       "author": {
         "name": "Skarn",
         "url": "https://getskarn.com"
@@ -20,13 +20,24 @@
     },
     {
       "name": "skarn-guard-codex",
-      "description": "Real-time pre-execution secret and exfiltration guard for Codex CLI (audit mode).",
+      "description": "Real-time pre-execution secret and exfiltration guard for Codex CLI (audit mode), with the skarn-audit skill.",
       "author": {
         "name": "Skarn",
         "url": "https://getskarn.com"
       },
       "category": "security",
       "source": "./codex",
+      "homepage": "https://getskarn.com"
+    },
+    {
+      "name": "skarn-recall",
+      "description": "Reconstruct what you worked on from your AI coding sessions: recent, stats, and redacted export. Reads session content, so it ships separately from the guard.",
+      "author": {
+        "name": "Skarn",
+        "url": "https://getskarn.com"
+      },
+      "category": "productivity",
+      "source": "./recall",
       "homepage": "https://getskarn.com"
     }
   ]

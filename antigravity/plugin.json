@@ -1,0 +1,4 @@
+{
+  "name": "skarn-guard",
+  "description": "Skarn for the Antigravity CLI: the pre-execution guard hook, the skarn-audit skill, and the local skarn MCP server (scan_sessions, vet_configs, list_sessions, session_stats), all read-only and redacted. The skarn binary is installed separately."
+}

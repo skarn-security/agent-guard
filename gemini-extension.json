@@ -1,0 +1,14 @@
+{
+  "name": "skarn",
+  "description": "Session and config audit and the pre-execution guard for Gemini CLI, backed by the Skarn detection engine on your machine.",
+  "mcpServers": {
+    "skarn": {
+      "command": "skarn",
+      "args": [
+        "mcp"
+      ]
+    }
+  },
+  "contextFileName": "GEMINI.md",
+  "version": "0.25.0"
+}

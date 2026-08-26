@@ -1,0 +1,16 @@
+{
+  "skarn-guard": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command|write_to_file|replace_file_content|multi_replace_file_content|file_change|code_action|notebook_edit|edit_notebook|browser_.*|execute_browser_javascript|capture_browser_screenshot|read_url_content|open_browser_url|search_web|call_mcp_tool|mcp_tool|agency_tool_call|invoke_subagent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "skarn guard --agent antigravity --guard-mode enforce",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

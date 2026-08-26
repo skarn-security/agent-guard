@@ -1,10 +1,19 @@
 {
   "name": "skarn-guard",
-  "version": "0.24.0",
-  "description": "Real-time PreToolUse guard: blocks AI tool calls that leak a secret, run a malicious package install, or exfiltrate data. Backed by the Skarn detection engine.",
+  "version": "0.25.0",
+  "description": "Real-time guard on five Claude Code pre-execution hook events (tool calls, permission decisions, submitted and expanded prompts, and subagent creation) plus a response-end advisory that flags an action leaking a secret, installing a malicious package, or exfiltrating data, plus the skarn-audit skill (scan sessions and vet configs, redacted). Ships in audit mode, which reports the verdict and never changes what the agent does; blocking needs enforce mode and a registered license. Backed by the Skarn detection engine.",
   "author": {
     "name": "Skarn",
     "url": "https://getskarn.com"
   },
-  "homepage": "https://getskarn.com"
+  "homepage": "https://getskarn.com",
+  "repository": "https://github.com/skarn-security/agent-guard",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "secrets",
+    "guard",
+    "skills",
+    "audit"
+  ]
 }

@@ -1,0 +1,31 @@
+{
+  "hooks": {
+    "BeforeTool": [
+      {
+        "matcher": "run_shell_command|write_file|replace|read_file|read_many_files|web_fetch|google_web_search|invoke_agent|mcp_.*",
+        "hooks": [
+          {
+            "type": "command",
+            "name": "skarn-guard",
+            "command": "skarn guard --agent gemini --guard-mode audit",
+            "timeout": 5000,
+            "description": "skarn: scan the tool call before it runs"
+          }
+        ]
+      }
+    ],
+    "BeforeAgent": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "name": "skarn-guard",
+            "command": "skarn guard --agent gemini --guard-mode audit",
+            "timeout": 5000,
+            "description": "skarn: scan the submitted prompt before it leaves the machine"
+          }
+        ]
+      }
+    ]
+  }
+}
