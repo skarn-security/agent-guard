@@ -1,6 +1,6 @@
 {
   "name": "skarn",
-  "description": "Session and config audit and the pre-execution guard for Gemini CLI, backed by the Skarn detection engine on your machine.",
+  "description": "Security scanner for Gemini CLI: finds leaked credentials and secrets in your sessions, vets the hooks and MCP servers the CLI loads, and runs a pre-execution guard that reports the tool calls it would have flagged. Everything runs locally on the Skarn engine and every finding comes back redacted.",
   "mcpServers": {
     "skarn": {
       "command": "skarn",
@@ -10,5 +10,5 @@
     }
   },
   "contextFileName": "GEMINI.md",
-  "version": "0.25.0"
+  "version": "0.26.0"
 }

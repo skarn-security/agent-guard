@@ -71,7 +71,15 @@ Cursor has its own repository, https://github.com/skarn-security/cursor-plugin, 
 
 ## Local MCP server
 
-Each of the four guard units (`claude/`, `codex/`, `antigravity/`, and the Gemini extension at the root) declares the same stdio MCP server, which the host starts by running `skarn mcp` from your PATH:
+Each of the four guard units (`claude/`, `codex/`, `antigravity/`, and the Gemini extension at the root) declares the same stdio MCP server, which the host starts by running `skarn mcp` from your PATH. Cursor and VS Code take it in one click:
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoic2thcm4iLCJhcmdzIjpbIm1jcCJdfQ%3D%3D)
+
+[![Add to VS Code](https://img.shields.io/badge/VS_Code-Add_skarn_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22skarn%22%2C%22args%22%3A%5B%22mcp%22%5D%7D)
+
+Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, so install the binary first. If you would rather not install it, the pinned launcher form works with only Node present: [Cursor](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBza2Fybi1zZWN1cml0eS9za2FybkAwLjI2LjAiLCJtY3AiXX0%3D) or [VS Code](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40skarn-security%2Fskarn%400.26.0%22%2C%22mcp%22%5D%7D) - it downloads `@skarn-security/skarn@0.26.0` on first run and reuses the npx cache afterwards; a newer Skarn needs a newer link.
+
+Manual configuration for any client:
 
 ```json
 {
@@ -86,6 +94,8 @@ Each of the four guard units (`claude/`, `codex/`, `antigravity/`, and the Gemin
 
 It runs on your machine, makes no network call, and exposes four read-only tools: `scan_sessions` (findings from past sessions, every previewed value redacted), `vet_configs` (a masked report on your assistant configuration surface), `list_sessions` and `session_stats` (metadata and aggregates, never message content). There is no write tool and no tool that returns message content.
 
+Two content tools, `search_sessions` and `get_session`, appear only if you start the server as `skarn mcp --enable-recall`. Both mask what they return, and the content still leaves your machine for the model provider serving the session, so the declarations above do not set the flag. `search_sessions` refuses a call that names neither `hours` nor `project`; `get_session` takes one exact `session_id`, which is already its scope.
+
 If you would rather not install the binary yourself, a version-pinned npx form works:
 
 ```json
@@ -93,13 +103,15 @@ If you would rather not install the binary yourself, a version-pinned npx form w
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.25.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.26.0", "mcp"]
     }
   }
 }
 ```
 
 npx downloads the package the first time the server starts and caches it afterward, so the first start is slower and needs network access. Pin the version. The unpinned form resolves to whatever the registry serves at start time, and `skarn vet` reports it as `vet-mcp-unpinned`. Do not use it.
+
+`llms-install.md` at this repository's root is the same install in agent-readable steps, for a client that wires the server up for you.
 
 Each host reports a missing binary its own way. `claude mcp list` says `Failed to connect` with `Executable not found in $PATH: "skarn"`. `gemini mcp list` shows the `skarn` server as `Disconnected`. `codex mcp list` runs no health check, so the row stays listed and enabled and the server fails when a session starts it. Cursor shows the plugin's row as `Error - Show Output`, and the output panel ends with `spawn skarn ENOENT`. In every case, run `skarn --version` in a terminal: `command not found` means the binary is not installed or is not on the PATH that host inherits, which is the usual answer for an application launched from a desktop rather than a shell.
 
@@ -136,3 +148,11 @@ The guard only ever tightens a decision, never loosens one. What happens when th
 Claude Code, Codex CLI, and Gemini CLI fail open: a malformed event, an out-of-scope tool, or any guard error yields allow, and the guard never bricks your agent. The only fail-closed path on those hosts is `--strict` with a licensed enforce, which each host README documents.
 
 The Antigravity CLI fails closed on every hook outcome except an explicit allow: a crash, a timeout, invalid JSON, and an empty `{}` all block the matched call, in audit mode as well as enforce, and a wired hook with no `skarn` binary on PATH blocks every matched call. The guard answers every event it receives with an explicit decision, and the shipped matcher names only the tools it scopes so that a step outside the matcher can never be blocked by a guard failure. Install skarn before wiring that hook, and remove the entry before uninstalling skarn. Documentation: https://getskarn.com/?utm_source=agent-guard-readme&utm_medium=referral&utm_campaign=home&utm_content=documentation
+
+## License, privacy, and support
+
+This repository is MIT licensed; see LICENSE. It carries configuration only, so that covers the plugin manifests, the hooks, the skills, and the MCP server declarations in it.
+
+The `skarn` binary those files invoke is a separate download and is not open source. It is licensed under the Skarn End User License Agreement at https://getskarn.com/terms/, and running it accepts that agreement. What it reads, what it keeps, and what it never sends anywhere: https://getskarn.com/privacy/.
+
+Support: hello@getskarn.com. Vulnerability reports go to security@getskarn.com; see SECURITY.md in this repository.
