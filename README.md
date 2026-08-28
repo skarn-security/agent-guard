@@ -77,7 +77,7 @@ Each of the four guard units (`claude/`, `codex/`, `antigravity/`, and the Gemin
 
 [![Add to VS Code](https://img.shields.io/badge/VS_Code-Add_skarn_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22skarn%22%2C%22args%22%3A%5B%22mcp%22%5D%7D)
 
-Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, so install the binary first. If you would rather not install it, the pinned launcher form works with only Node present: [Cursor](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBza2Fybi1zZWN1cml0eS9za2FybkAwLjI2LjAiLCJtY3AiXX0%3D) or [VS Code](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40skarn-security%2Fskarn%400.26.0%22%2C%22mcp%22%5D%7D) - it downloads `@skarn-security/skarn@0.26.0` on first run and reuses the npx cache afterwards; a newer Skarn needs a newer link.
+Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, so install the binary first. If you would rather not install it, the pinned launcher form works with only Node present: [Cursor](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBza2Fybi1zZWN1cml0eS9za2FybkAwLjI3LjAiLCJtY3AiXX0%3D) or [VS Code](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40skarn-security%2Fskarn%400.27.0%22%2C%22mcp%22%5D%7D) - it downloads `@skarn-security/skarn@0.27.0` on first run and reuses the npx cache afterwards; a newer Skarn needs a newer link.
 
 Manual configuration for any client:
 
@@ -103,7 +103,7 @@ If you would rather not install the binary yourself, a version-pinned npx form w
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.26.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.27.0", "mcp"]
     }
   }
 }

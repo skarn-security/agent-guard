@@ -14,7 +14,18 @@ brew install skarn-security/tap/skarn
 npm install -g @skarn-security/skarn
 ```
 
-Or download the release binary for the platform from https://github.com/skarn-security/skarn-dist/releases and put it on the PATH.
+Or download the release binary for the platform from https://github.com/skarn-security/skarn-dist/releases and put it on the PATH. The `.tar.gz` extracts a `skarn` executable beside the man pages and the licence files; the executable is what goes on the PATH, and it does not carry the archive's platform name. On Windows the asset is a bare `skarn-<arch>-windows.exe` with no archive; rename it to `skarn.exe` before putting it on the PATH.
+
+Verify the download before extracting or running it. Fetch `SHA256SUMS` and `SHA256SUMS.sigstore.json` from the same release, check the signature with [cosign](https://github.com/sigstore/cosign/releases), then check the downloaded asset against the verified manifest, with `<asset>` replaced by the filename as the release published it (on Windows that is `skarn-<arch>-windows.exe`, verified before the rename) so a name the manifest does not carry fails rather than passing silently:
+
+```sh
+cosign verify-blob SHA256SUMS --bundle SHA256SUMS.sigstore.json \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp '^https://github.com/skarn-security/skarn/\.github/workflows/(release|publish-npm)\.yml@'
+grep ' <asset>$' SHA256SUMS | shasum -a 256 -c
+```
+
+The signature is what ties the manifest to the Skarn release workflow. Without cosign, a matching checksum shows only that the asset and the manifest agree with each other, so tell the user which of the two checks ran. These are POSIX commands; on Windows run them in Git Bash, where cosign's Windows build works the same way.
 
 ## Verify the install
 
@@ -39,7 +50,33 @@ Add this to the client's MCP settings:
 }
 ```
 
-In Cline, write it to `~/.cline/mcp.json`, or paste it into the Configure MCP Servers panel. Other clients take the same object under their own MCP settings key.
+In Cline, merge it into `~/.cline/data/settings/cline_mcp_settings.json` (create the file with this object if it does not exist; both the VS Code extension and the CLI read that one file), or paste it into the Configure MCP Servers panel. Cline does not read `~/.cline/mcp.json`. Other clients take the same object under their own MCP settings key.
+
+If the client's inherited PATH does not resolve `skarn`, declare the absolute path instead. Find it from a terminal with `command -v skarn` (POSIX shells), `(Get-Command skarn).Source` (PowerShell), or `where skarn` (cmd.exe), and put the exact output in place of the placeholder:
+
+```json
+{
+  "mcpServers": {
+    "skarn": {
+      "command": "/absolute/path/to/skarn",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+A Windows path in JSON needs each backslash doubled:
+
+```json
+{
+  "mcpServers": {
+    "skarn": {
+      "command": "C:\\absolute\\path\\to\\skarn.exe",
+      "args": ["mcp"]
+    }
+  }
+}
+```
 
 ## The launcher alternative
 
@@ -50,7 +87,7 @@ If the user would rather not install the binary, a version-pinned launcher form 
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.26.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.27.0", "mcp"]
     }
   }
 }
