@@ -87,7 +87,7 @@ If the user would rather not install the binary, a version-pinned launcher form 
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.27.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.28.0", "mcp"]
     }
   }
 }
