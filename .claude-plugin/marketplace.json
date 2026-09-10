@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "skarn-guard",
-      "description": "Real-time pre-execution secret and exfiltration guard for Claude Code (audit mode), with the skarn-audit skill.",
+      "description": "Real-time pre-execution secret and exfiltration guard for Claude Code (audit mode), with the skarn-audit skill and a local read-only MCP server (four tools, no network call, every matched value masked).",
       "author": {
         "name": "Skarn",
         "url": "https://getskarn.com"
@@ -20,7 +20,7 @@
     },
     {
       "name": "skarn-guard-codex",
-      "description": "Real-time pre-execution secret and exfiltration guard for Codex CLI (audit mode), with the skarn-audit skill.",
+      "description": "Real-time pre-execution secret and exfiltration guard for Codex CLI (audit mode), with the skarn-audit skill and a local read-only MCP server (four tools, no network call, every matched value masked).",
       "author": {
         "name": "Skarn",
         "url": "https://getskarn.com"
