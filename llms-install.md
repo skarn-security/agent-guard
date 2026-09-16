@@ -87,7 +87,7 @@ If the user prefers not to install the binary, this version-pinned launcher need
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.30.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.31.0", "mcp"]
     }
   }
 }
@@ -99,9 +99,9 @@ The launcher downloads the pinned package on first start, so that start is slowe
 
 It runs on the user's machine over stdio, makes no network call, and exposes four read-only tools:
 
-- `scan_sessions`: findings from AI coding sessions, with every previewed value redacted.
-- `vet_configs`: a masked report on the assistant configuration: hooks, MCP servers, and permission grants.
-- `list_sessions`: session metadata: ids, assistant, timestamps, counts. No message content.
+- `scan_sessions`: findings from AI coding sessions, with each detected credential value masked.
+- `vet_configs`: findings on the assistant configuration (hooks, MCP servers, and permission grants), quoting excerpts of hook commands and MCP server definitions, with detected credential values masked.
+- `list_sessions`: session metadata: `session_id`, `cli`, `user_id`, the first and last timestamps, and message, call, and token counts. No message content.
 - `session_stats`: aggregates. No message content.
 
 Redaction masks detected credential values, and the context around a finding is still session-derived, so treat each result as session data rather than safe text, and do not reconstruct a masked value.

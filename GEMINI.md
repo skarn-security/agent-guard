@@ -2,9 +2,9 @@
 
 This extension adds a local `skarn` MCP server and the `skarn-audit` skill. The server runs on the user's machine, makes no network call, and exposes four tools:
 
-- `scan_sessions` returns findings from past AI coding sessions. Every previewed value is redacted.
-- `vet_configs` returns a report on the local assistant configuration surface. Every value is masked.
-- `list_sessions` returns session metadata: identifiers, timestamps, projects, counts. Never message content.
+- `scan_sessions` returns findings from past AI coding sessions. A detected credential value appears only in masked form; file paths, session ids, timestamps, and a Compliance API export's user and workspace ids come back unmasked.
+- `vet_configs` returns findings on the local assistant configuration. They quote excerpts of hook commands and MCP server definitions, with detected credential values masked.
+- `list_sessions` returns session metadata: `session_id`, `cli`, `user_id`, the first and last timestamps, and message, call, and token counts. Never message content.
 - `session_stats` returns aggregate counts. Never message content.
 
 Every tool is read-only. None of them writes a file, changes a configuration, or reaches the network.

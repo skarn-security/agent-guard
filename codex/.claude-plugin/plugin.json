@@ -1,6 +1,6 @@
 {
   "name": "skarn-guard-codex",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "description": "Real-time pre-execution guard that blocks AI tool calls leaking a secret, installing a malicious package, or exfiltrating data, plus the skarn-audit skill (scan sessions and vet configs, redacted). Backed by the Skarn detection engine. Audit mode reports only. It also declares one local MCP server, named skarn, with four tools (scan_sessions, vet_configs, list_sessions, session_stats): every tool is read-only, none of them writes or changes a file, none of them makes a network call, and every matched value comes back masked.",
   "author": {
     "name": "Skarn",

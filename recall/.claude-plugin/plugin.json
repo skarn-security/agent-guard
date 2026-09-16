@@ -1,6 +1,6 @@
 {
   "name": "skarn-recall",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "description": "Skill: reconstruct what you worked on from your AI coding sessions (recent, stats, redacted export). Reads session content, so it ships separately from skarn-guard. Backed by the Skarn session engine.",
   "author": {
     "name": "Skarn",

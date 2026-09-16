@@ -16,7 +16,7 @@ The buttons add the local MCP server; the table installs the guard.
 
 [![Add to VS Code](https://img.shields.io/badge/VS_Code-Add_skarn_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22skarn%22%2C%22args%22%3A%5B%22mcp%22%5D%7D)
 
-Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, so install the binary first. If you would rather not install it, the pinned launcher form works with only Node present: [Cursor](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBza2Fybi1zZWN1cml0eS9za2FybkAwLjMwLjAiLCJtY3AiXX0%3D) or [VS Code](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40skarn-security%2Fskarn%400.30.0%22%2C%22mcp%22%5D%7D) - it downloads `@skarn-security/skarn@0.30.0` on first run and reuses the npx cache afterwards; a newer Skarn needs a newer link.
+Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, so install the binary first. If you would rather not install it, the pinned launcher form works with only Node present: [Cursor](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBza2Fybi1zZWN1cml0eS9za2FybkAwLjMxLjAiLCJtY3AiXX0%3D) or [VS Code](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40skarn-security%2Fskarn%400.31.0%22%2C%22mcp%22%5D%7D) - it downloads `@skarn-security/skarn@0.31.0` on first run and reuses the npx cache afterward; a newer Skarn needs a newer link.
 
 | Host | Commands | Caveat |
 | --- | --- | --- |
@@ -53,7 +53,7 @@ Without the binary, a pinned launcher works:
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.30.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.31.0", "mcp"]
     }
   }
 }
@@ -63,7 +63,7 @@ Keep the version pinned; `skarn vet` reports the unpinned form as `vet-mcp-unpin
 
 ## Audit first, then enforce
 
-Both guard plugins ship in audit mode. Audit reports the would-be verdict and changes nothing. `SKARN_GUARD_LOG=<path>` in the agent's environment logs one redacted record per flagged call. Once the log is clean, flip `--guard-mode audit` to `--guard-mode enforce`, or run `skarn setup --update --mode enforce`. Enforcement requires a Skarn license, which decides the rules that block; without one the guard stays in audit, so a lapsed license does not break your editor.
+Both guard plugins ship in audit mode. Audit reports the would-be verdict and changes nothing. `SKARN_GUARD_LOG=<path>` in the agent's environment logs one redacted record per flagged call. Once the log is clean, change `--guard-mode audit` to `--guard-mode enforce` in the plugin's hook entries. `skarn setup --update --mode enforce` flips only the `skarn guard` hooks in a host's own config, so it leaves these plugins in audit. Enforcement runs on any paid tier; without one the guard stays in audit, so a lapsed license does not break your editor.
 
 ## Updating
 
