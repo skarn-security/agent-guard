@@ -32,7 +32,7 @@ Other platforms: https://getskarn.com/install/
 
 - Local. Once skarn is installed, every skarn command below runs on this machine and makes no network call. Installing it is the one step that reaches the network.
 - Read-only. None of these commands writes to a session store.
-- Redacted, on the export path only. `skarn export` masks every credential skarn detects before it writes content out, and this skill only ever uses that default: it never turns the mask off, and it never asks the user to. `skarn cmds` masks nothing at all; see the data boundary below.
+- Redacted. `skarn export` and `skarn cmds` mask every credential skarn detects before they write content out, nothing turns the mask off, and the skill never asks the user to look for a way. The mask covers detected credentials only; see the data boundary below.
 - No license needed. Every skarn command below runs without a registered license.
 
 ## Data boundary
@@ -41,7 +41,7 @@ Say this to the user before the first command that reads transcript content, and
 
 Session metadata (ids, projects, branches, models, tool and token counts, timestamps) describes the work without reproducing it. Transcript content is the work itself, and everything you read leaves this machine for the model provider serving you. Redaction masks the credentials skarn detects; it does not mask everything the user would consider sensitive, and it does not mask what a colleague, a client name or an unreleased plan reveals.
 
-Two commands below return transcript content, not metadata, and they sit on opposite sides of the mask. `skarn export` redacts by default. `skarn cmds` does NOT: it returns each shell command exactly as it was run, so a credential passed as an argument, a signed URL, an internal hostname or a customer name in a path reaches you verbatim. Treat its output as raw transcript.
+Two commands below return transcript content, not metadata: `skarn export` and `skarn cmds`. Both mask every credential Skarn detects and nothing else, so a signed URL, an internal hostname or a customer name in a path reaches you verbatim. Treat their output as transcript.
 
 So: scope every content read with `--project` or a time window, and pull the narrowest one the question needs. When a question can be answered from `recent`, `stats`, `tools`, `mcps` or `search --list`, answer it from those and read no content at all.
 
@@ -95,7 +95,7 @@ skarn export --project "$sel" --hours 24 --format json
 
 Prefer the single-session form. Reach for the project form only when the question spans sessions, and keep the window as small as the question allows.
 
-Raw shell command history, unredacted, for a question the exports cannot answer (which commands ran, in what order, and which failed):
+Shell command history, with detected credentials masked and everything else as recorded, for a question the exports cannot answer (which commands ran, in what order, and which failed):
 
 ```sh
 skarn cmds --hours 24 --format json
@@ -137,11 +137,11 @@ A value the user gives you in conversation is different: they are the one asking
 
 `skarn stats --format json` returns `session_count`, a per-assistant count, `total_messages`, `project_count` and the token and cost aggregates. `--by project` and `--by date` group the same numbers.
 
-`skarn tools` and `skarn mcps` return the tool and server names with call and failure counts. `skarn cmds` returns one row per shell command with its `timestamp`, `cli`, `project`, `is_error`, and the `command` string as it was run.
+`skarn tools` and `skarn mcps` return the tool and server names with call and failure counts. `skarn cmds` returns one row per shell command with its `timestamp`, `cli`, `project`, `is_error`, and the `command` string as it was run, with detected credentials masked.
 
 `skarn search --list` returns one line per matching session: the assistant and the session id.
 
-`skarn export --format json` returns the envelope `schema_version`, `skarn_version`, `exported_at`, `redacted`, `filters`, `session_count` and `sessions[]`. `redacted` reports which mode the export ran in; when it is true, detected credentials in the content are masked.
+`skarn export --format json` returns the envelope `schema_version`, `skarn_version`, `exported_at`, `filters`, `session_count` and `sessions[]`; detected credentials in the content are masked.
 
 ## Report shape
 
