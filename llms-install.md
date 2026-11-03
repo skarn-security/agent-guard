@@ -87,13 +87,13 @@ If the user prefers not to install the binary, this version-pinned launcher need
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.33.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.34.0", "mcp"]
     }
   }
 }
 ```
 
-The launcher downloads the pinned package on first start, so that start is slower and needs network access; later starts reuse the npx cache. Update the pinned string for a newer Skarn release; an unpinned form resolves to whatever the registry serves, and `skarn vet` reports it as `vet-mcp-unpinned`.
+The launcher downloads the pinned package on first start, so that start is slower and needs network access; later starts reuse the npx cache. Update the pinned string for a newer Skarn release; an unpinned form resolves to whatever the registry serves, and `skarn vet` reports it as `vet-mcp-unpinned`; a credential written as a literal into a server's `env` or `headers` block is reported as `vet-mcp-plaintext-credential`.
 
 ## What the server does
 

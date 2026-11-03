@@ -16,7 +16,7 @@ The buttons add the local MCP server; the table installs the guard.
 
 [![Add to VS Code](https://img.shields.io/badge/VS_Code-Add_skarn_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22skarn%22%2C%22args%22%3A%5B%22mcp%22%5D%7D)
 
-Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, so install the binary first. If you would rather not install it, the pinned launcher form works with only Node present: [Cursor](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBza2Fybi1zZWN1cml0eS9za2FybkAwLjMzLjAiLCJtY3AiXX0%3D) or [VS Code](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40skarn-security%2Fskarn%400.33.0%22%2C%22mcp%22%5D%7D) - it downloads `@skarn-security/skarn@0.33.0` on first run and reuses the npx cache afterward; a newer Skarn needs a newer link.
+Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, so install the binary first. If you would rather not install it, the pinned launcher form works with only Node present: [Cursor](https://cursor.com/install-mcp?name=skarn&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBza2Fybi1zZWN1cml0eS9za2FybkAwLjM0LjAiLCJtY3AiXX0%3D) or [VS Code](https://vscode.dev/redirect/mcp/install?name=skarn&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40skarn-security%2Fskarn%400.34.0%22%2C%22mcp%22%5D%7D) - it downloads `@skarn-security/skarn@0.34.0` on first run and reuses the npx cache afterward; a newer Skarn needs a newer link.
 
 | Host | Commands | Caveat |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ Both buttons register the server as `skarn` and run `skarn mcp` from your PATH, 
 | Gemini CLI | `gemini extensions install https://github.com/skarn-security/agent-guard` | The root is itself the Gemini extension, because Google's installer reads the manifest there, and carries the same hooks, skill, and MCP server. Install asks for consent and folder trust; answer both. |
 | Antigravity CLI | `git clone https://github.com/skarn-security/agent-guard`<br>`agy plugin install agent-guard/antigravity` | Fails closed; see Safety. |
 | Cursor | `mkdir -p ~/.cursor/plugins/local`<br>`git clone https://github.com/skarn-security/cursor-plugin ~/.cursor/plugins/local/skarn` | Listing pending. Cursor rejects a local plugin whose symlink target lies outside `~/.cursor/plugins/local`, so clone there, then run `Developer: Reload Window`. The hooks are macOS and Linux only, and fail open on Windows. |
-| Any host, via `skarn setup` | `skarn setup` | Merges the same hooks into the native config of Claude Code, Codex CLI, Cursor, Copilot CLI, Gemini CLI, and Grok Build, but not Antigravity. |
+| Any host, via `skarn setup` | `skarn setup` | Merges the same hooks into the native config of Claude Code, Codex CLI, Cursor, Copilot CLI, Gemini CLI, Grok Build, and Copilot in Code, but not Antigravity. |
 
 Both guard plugins carry the `skarn-audit` skill. `skarn-recall`, a skill-only plugin in the same marketplace, reconstructs your past work from transcripts: `claude plugin install skarn-recall@skarn`, or `codex plugin add skarn-recall@skarn`.
 
@@ -53,13 +53,13 @@ Without the binary, a pinned launcher works:
   "mcpServers": {
     "skarn": {
       "command": "npx",
-      "args": ["-y", "@skarn-security/skarn@0.33.0", "mcp"]
+      "args": ["-y", "@skarn-security/skarn@0.34.0", "mcp"]
     }
   }
 }
 ```
 
-Keep the version pinned; `skarn vet` reports the unpinned form as `vet-mcp-unpinned`.
+Keep the version pinned; `skarn vet` reports the unpinned form as `vet-mcp-unpinned`, and a credential written as a literal into a server's `env` or `headers` block as `vet-mcp-plaintext-credential`.
 
 ## Audit first, then enforce
 
@@ -81,7 +81,7 @@ Plugin and binary updates are independent.
 
 ## Safety
 
-The guard only tightens a decision. Claude Code, Codex CLI, and Gemini CLI fail open: a guard error yields allow, unless a licensed enforce runs `--strict`, which also gates `Read`. The Antigravity CLI fails closed on every outcome except an explicit allow, in audit as well as enforce: a crash, a timeout, invalid JSON, or a missing `skarn` binary blocks the matched call. Install skarn before wiring that hook, and remove the entry before uninstalling it.
+The guard only tightens a decision. On Claude Code, Codex CLI, and Gemini CLI an event the guard cannot classify asks in enforce, degraded to a deny where the host has no ask channel, and `--strict` turns that ask into a deny and also gates `Read`; a scan-infrastructure failure yields allow on Codex and Gemini unless a licensed enforce runs `--strict`. The Antigravity CLI fails closed on every outcome except an explicit allow, in audit as well as enforce: a crash, a timeout, invalid JSON, or a missing `skarn` binary blocks the matched call. Install skarn before wiring that hook, and remove the entry before uninstalling it.
 
 Transcript content the recall skill reads leaves your machine for the model provider serving the agent; redaction masks the credentials Skarn detects, not everything you would call sensitive.
 
