@@ -2,7 +2,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash|WebFetch|WebSearch|Write|Edit|MultiEdit|NotebookEdit|mcp__.*",
+        "matcher": "Bash|Read|WebFetch|WebSearch|Write|Edit|MultiEdit|NotebookEdit|mcp__.*",
         "hooks": [
           {
             "type": "command",
@@ -14,7 +14,7 @@
     ],
     "PermissionRequest": [
       {
-        "matcher": "Bash|WebFetch|WebSearch|Write|Edit|MultiEdit|NotebookEdit|mcp__.*",
+        "matcher": "Bash|Read|WebFetch|WebSearch|Write|Edit|MultiEdit|NotebookEdit|mcp__.*",
         "hooks": [
           {
             "type": "command",
@@ -47,6 +47,17 @@
       }
     ],
     "TaskCreated": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "skarn guard --guard-mode audit",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolBatch": [
       {
         "hooks": [
           {
