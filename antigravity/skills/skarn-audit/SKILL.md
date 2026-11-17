@@ -63,7 +63,7 @@ skarn assess --cli claude --json
 skarn assess --project "$sel" --json
 ```
 
-Write the assistant name out: `--cli` takes one of `claude`, `gemini`, `codex`, `cursor`, `copilot`, `kimi`, `grok`, `grokbot`, `antigravity`, `opencode`, `cline`, `copilot-code` and nothing else, so it never needs a bound selector. A name this machine has no tool for exits 6 rather than reporting an empty scan.
+Write the assistant name out: `--cli` takes one of `claude`, `gemini`, `codex`, `cursor`, `copilot`, `kimi`, `grok`, `grokbot`, `antigravity`, `opencode`, `cline`, `copilot-code`, `kiro` and nothing else, so it never needs a bound selector. A name this machine has no tool for exits 6 rather than reporting an empty scan.
 
 3. Pull one finding's redacted dossier when the user asks about a single credential. Bind `sel` to the finding's 64-character fingerprint.
 
@@ -78,6 +78,8 @@ skarn assess
 ```
 
 5. Vet the assistant configuration.
+
+Use `skarn vet --all-projects --format json` to include the projects Claude Code records in `~/.claude.json` and the `.claude.json` of each directory named by `CLAUDE_CONFIG_DIR` or `SKARN_CLAUDE_DIRS`; the declared directories contribute only their `projects` keys.
 
 ```sh
 skarn vet --format json
@@ -126,7 +128,7 @@ A value the user gives you in conversation is different: they are the one asking
 
 `skarn assess --dossier` returns `dossier`, `disclaimer`, `statements`, `not_supplied`, `audit_log_reference` and `scan`. Read `dossier.selector_kind` for what was matched and `scan.incidents` for the finding itself. `not_supplied` lists the regulatory reporting fields skarn does not hold; quote it rather than filling the gaps.
 
-`skarn vet --format json` returns `findings[]` (`ruleId`, `severity`, `title`, `detail` with credentials masked, `configPath`, `locator`), plus `configFilesRead`, `settingsExamined` and `unreadable[]`. Vet reports the configuration as DECLARED in each file. It does not resolve the layer merge an assistant performs at runtime, so a declaration a higher layer overrides is still reported.
+`skarn vet --format json` returns `findings[]` (`ruleId`, `severity`, `title`, `detail` with credentials masked, `configPath`, `project`, `locator`), plus `configFilesRead`, `settingsExamined`, `projectsVetted`, `projectsSkipped` and `unreadable[]`. `project` names the absolute project root, scrubbed and masked like `configPath`, or an empty string for a home, system, host-home or profile file. `projectsVetted` counts distinct project roots; `projectsSkipped` counts recorded paths that are not existing absolute directories. A `vet-*-plaintext-credential` finding means a credential is stored in plain text in `configPath` at `locator`, shown only as a masked preview, and the value is never reconstructed. Vet reports the configuration as DECLARED in each file. It does not resolve the layer merge an assistant performs at runtime, so a declaration a higher layer overrides is still reported.
 
 Read `unreadable[]` on every vet run, whatever the exit code. It lists configuration files that exist and were not read, and each one is a gap in coverage.
 
@@ -142,7 +144,7 @@ Skarn surfaces findings. It does not rotate a credential, edit a configuration, 
 
 For each credential finding, tell the user which credential type leaked (from `rule`), where (`cli`, `project`, `session_id`, `line`), and that the credential itself needs rotating by whoever owns it. A credential that reached a session transcript has already left the process that held it.
 
-For each vet finding, explain what the declaration in `configPath` at `locator` permits, and offer the tightening as a diff for the user to apply.
+For each vet finding, explain what the declaration in `configPath` at `locator` does. For a permission entry, the locator names its list: an `allow` or `allowedTools` entry permits the action, an `ask` entry makes the assistant ask before it, and a `deny` entry blocks it. Offer the tightening as a diff for the user to apply. For a `vet-*-plaintext-credential` finding, name the file, the locator and the credential type from the rule its `detail` names; when the detail says no rule matched, say the type is unknown. Never try to reconstruct the value from its masked preview.
 
 When the user confirms a finding is a false positive, and only then, record it with `skarn baseline accept`, which takes the baseline file to write, then the fingerprint, then `--reason`. Bind the file path and the fingerprint the same way as any other selector and expand each as its own quoted argument, so a path containing a space stays one argument. Never suppress a finding the user has not looked at. `skarn check` is the gating verb for CI, reads the same baseline, and needs a registered license.
 
